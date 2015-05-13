@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/jasonf7/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
+        <dex dex="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/pre-dexed/debug/gson-2.3.1-fd0bd52e4056c89eae38679b046afd01ef8f16f4.jar" />
+    </item>
+    <item
+        jar="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
+        <dex dex="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/pre-dexed/debug/classes-3af90f0a50c32ebc263d2e1367040ae322a0c49d.jar" />
+    </item>
+    <item
+        jar="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
+        <dex dex="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/pre-dexed/debug/classes-146c0c56e80896ca574a328d071d9d2ce883eb02.jar" />
+    </item>
+    <item
+        jar="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/libs/internal_impl-22.1.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
+        <dex dex="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/pre-dexed/debug/internal_impl-22.1.1-ff4f4297674db5fb55efc739c05bdaae81ebbf65.jar" />
+    </item>
+    <item
+        jar="/home/jasonf7/Development/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.1.1/support-annotations-22.1.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="01d051a6bfb1218b1db2d3a5af0480ac2c25c42a">
+        <dex dex="/home/jasonf7/Development/Android/What2Wear/app/build/intermediates/pre-dexed/debug/support-annotations-22.1.1-1eb29d40435e7426b61a9d95888d72086e1a1073.jar" />
+    </item>
+
+</items>
