@@ -1665,6 +1665,14 @@ containing a value of this type.
         public static final int hello_blank_fragment=0x7f060013;
         public static final int hello_world=0x7f060014;
         public static final int openweather_api_key=0x7f060015;
+        public static final int weather_clear_night=0x7f060016;
+        public static final int weather_cloudy=0x7f060017;
+        public static final int weather_drizzle=0x7f060018;
+        public static final int weather_foggy=0x7f060019;
+        public static final int weather_rainy=0x7f06001a;
+        public static final int weather_snowy=0x7f06001b;
+        public static final int weather_sunny=0x7f06001c;
+        public static final int weather_thunder=0x7f06001d;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f08006b;

@@ -548,6 +548,14 @@ int string app_name 0x7f060012
 int string hello_blank_fragment 0x7f060013
 int string hello_world 0x7f060014
 int string openweather_api_key 0x7f060015
+int string weather_clear_night 0x7f060016
+int string weather_cloudy 0x7f060017
+int string weather_drizzle 0x7f060018
+int string weather_foggy 0x7f060019
+int string weather_rainy 0x7f06001a
+int string weather_snowy 0x7f06001b
+int string weather_sunny 0x7f06001c
+int string weather_thunder 0x7f06001d
 int style AlertDialog_AppCompat 0x7f08006b
 int style AlertDialog_AppCompat_Light 0x7f08006c
 int style Animation_AppCompat_Dialog 0x7f08006d

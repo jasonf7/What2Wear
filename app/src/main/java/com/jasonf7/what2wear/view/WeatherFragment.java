@@ -21,6 +21,12 @@ import com.jasonf7.what2wear.http.weather.WeatherResponse;
 import android.os.Handler;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link WeatherFragment#newInstance} factory method to
@@ -29,16 +35,22 @@ import android.widget.Toast;
 public class WeatherFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_LOC_LATITUDE = "location_latitude";
+    private static final String ARG_LOC_LONGITUDE = "location_longitude";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private double locLatitude;
+    private double locLongitude;
 
     private Handler handler;
     private Typeface weatherFont;
     private WeatherResponse weatherInfo;
+
+    private TextView locationText;
+    private TextView lastUpdateText;
+    private TextView weatherIconText;
+    private TextView temperatureText;
+    private TextView detailsText;
 
     /**
      * Use this factory method to create a new instance of
@@ -49,11 +61,11 @@ public class WeatherFragment extends Fragment {
      * @return A new instance of fragment WeatherFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WeatherFragment newInstance(String param1, String param2) {
+    public static WeatherFragment newInstance(double param1, double param2) {
         WeatherFragment fragment = new WeatherFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putDouble(ARG_LOC_LATITUDE, param1);
+        args.putDouble(ARG_LOC_LONGITUDE, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,41 +79,45 @@ public class WeatherFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            locLatitude = getArguments().getDouble(ARG_LOC_LATITUDE);
+            locLongitude = getArguments().getDouble(ARG_LOC_LONGITUDE);
         }
 
         weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
 
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if(locLatitude > 0 && locLongitude > 0){
+            getWeatherData(String.format("%.2f", locLatitude), String.format("%.2f", locLongitude));
+        } else {
+            final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Log.d("DEBUG", "Poll for location");
+            final LocationListener locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    Log.d("DEBUG", "Got location");
+                    locLongitude = location.getLongitude();
+                    locLatitude = location.getLatitude();
+                    getWeatherData(String.format("%.2f", locLatitude), String.format("%.2f", locLongitude));
+                    lm.removeUpdates(this);
+                }
 
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d("DEBUG", "got location");
-                double lat = location.getLatitude();
-                double lon = location.getLongitude();
-                getWeatherData(String.format("%.2f", lat), String.format("%.2f", lon));
-            }
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
 
-            }
+                @Override
+                public void onProviderEnabled(String provider) {
 
-            @Override
-            public void onProviderEnabled(String provider) {
+                }
 
-            }
+                @Override
+                public void onProviderDisabled(String provider) {
 
-            @Override
-            public void onProviderDisabled(String provider) {
+                }
+            };
 
-            }
-        };
-//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
-        getWeatherData("Waterloo");
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locationListener);
+        }
     }
 
     @Override
@@ -110,30 +126,69 @@ public class WeatherFragment extends Fragment {
         // Inflate the layout for this fragment
         View weatherView = inflater.inflate(R.layout.fragment_weather, container, false);
 
-        TextView weatherIconText = (TextView)weatherView.findViewById(R.id.weatherIconText);
+        locationText = (TextView)weatherView.findViewById(R.id.locationText);
+
+        lastUpdateText = (TextView)weatherView.findViewById(R.id.lastUpdateText);
+
+        weatherIconText = (TextView)weatherView.findViewById(R.id.weatherIconText);
         weatherIconText.setTypeface(weatherFont);
+
+        temperatureText = (TextView)weatherView.findViewById(R.id.temperatureText);
+
+        detailsText = (TextView)weatherView.findViewById(R.id.detailsText);
 
         return weatherView;
     }
 
     private void getWeatherData(final String lat, final String lon){
+//        new Thread(){
+//            public void run(){
+//                URL url = null;
+//                try {
+//                    url = new URL(String.format(WeatherHttp.OPEN_WEATHER_MAP_API_COORD, lat, lon));
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                }
+//                weatherInfo = WeatherHttp.getJSON(getActivity(), url);
+//                if(weatherInfo == null){
+//                    handler.post(new Runnable(){
+//                        public void run(){
+//                            Toast.makeText(getActivity(),"Weather for (" + lat + "," + lon + ") is unavailable.",
+//                                    Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+//                } else {
+//                    handler.post(new Runnable(){
+//                        public void run(){
+//                            Log.d("DEBUG", "Weather info retrieved!");
+//                            updateWeatherUI(weatherInfo);
+//                        }
+//                    });
+//                }
+//            }
+//        }.start();
+
         new Thread(){
             public void run(){
-                weatherInfo = WeatherHttp.getJSON(getActivity(), lat, lon);
+                URL url = null;
+                try {
+                    url = new URL(String.format(WeatherHttp.OPEN_WEATHER_MAP_API_COORD, lat, lon));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                weatherInfo = WeatherHttp.getJSON(getActivity(), url);
                 if(weatherInfo == null){
-                    handler.post(new Runnable(){
-                        public void run(){
-                            Toast.makeText(getActivity(),"Weather for (" + lat + "," + lon + ") is unavailable.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    Toast.makeText(getActivity(),"Weather for (" + lat + "," + lon + ") is unavailable.",
+                            Toast.LENGTH_LONG).show();
                 } else {
-                    handler.post(new Runnable(){
-                        public void run(){
-                            Log.d("DEBUG", "Weather info retrieved!");
+                    Log.d("DEBUG", "Weather info retrieved!");
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
                             updateWeatherUI(weatherInfo);
                         }
                     });
+
                 }
             }
         }.start();
@@ -142,7 +197,13 @@ public class WeatherFragment extends Fragment {
     private void getWeatherData(final String city){
         new Thread(){
             public void run(){
-                weatherInfo = WeatherHttp.getJSON(getActivity(), city);
+                URL url = null;
+                try {
+                    url = new URL(String.format(WeatherHttp.OPEN_WEATHER_MAP_API_CITY, city));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                weatherInfo = WeatherHttp.getJSON(getActivity(), url);
                 if(weatherInfo == null){
                     handler.post(new Runnable(){
                         public void run(){
@@ -170,5 +231,48 @@ public class WeatherFragment extends Fragment {
         Log.d("DEBUG", String.format("%.2f",weather.main.pressure));
         Log.d("DEBUG", weather.weather.get(0).description);
         Log.d("DEBUG", weather.dt + "");
+
+        locationText.setText(weather.name + ", " + weather.sys.country);
+
+        DateFormat df = DateFormat.getDateTimeInstance();
+        String updatedOn = df.format(new Date(weather.dt*1000));
+        lastUpdateText.setText("Last update: " + updatedOn);
+
+        setWeatherIcon((int) weather.weather.get(0).id, weather.sys.sunrise, weather.sys.sunset);
+
+        temperatureText.setText(String.format("%.2f", weather.main.temp) + "\u00b0 C");
+
+        detailsText.setText(weather.weather.get(0).description + "\n"
+                            + "Humidity: " + String.format("%.2f",weather.main.humidity)+ "%" + "\n"
+                            + "Pressure: " + String.format("%.2f",weather.main.pressure)+ "hPa");
+    }
+
+    private void setWeatherIcon(int actualId, long sunrise, long sunset){
+        int id = actualId / 100;
+        String icon = "";
+        if(actualId == 800){
+            long currentTime = new Date().getTime();
+            if(currentTime>=sunrise && currentTime<sunset) {
+                icon = getActivity().getString(R.string.weather_sunny);
+            } else {
+                icon = getActivity().getString(R.string.weather_clear_night);
+            }
+        } else {
+            switch(id) {
+                case 2 : icon = getActivity().getString(R.string.weather_thunder);
+                    break;
+                case 3 : icon = getActivity().getString(R.string.weather_drizzle);
+                    break;
+                case 7 : icon = getActivity().getString(R.string.weather_foggy);
+                    break;
+                case 8 : icon = getActivity().getString(R.string.weather_cloudy);
+                    break;
+                case 6 : icon = getActivity().getString(R.string.weather_snowy);
+                    break;
+                case 5 : icon = getActivity().getString(R.string.weather_rainy);
+                    break;
+            }
+        }
+        weatherIconText.setText(icon);
     }
 }
