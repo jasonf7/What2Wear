@@ -3,9 +3,11 @@ package com.jasonf7.what2wear.view;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jasonf7.what2wear.R;
+import com.jasonf7.what2wear.database.Clothing;
+import com.jasonf7.what2wear.database.ClothingContract;
+import com.jasonf7.what2wear.database.ClothingDbHelper;
+import com.jasonf7.what2wear.database.DBManager;
 
 /**
  * Created by jasonf7 on 26/05/15.
@@ -43,12 +49,17 @@ public class AddClothingActivity extends Activity {
     private Uri picUri;
     private Bitmap clothingImage;
 
+    private ClothingDbHelper clothingDbHelper;
+    private SQLiteDatabase clothingReadDB, clothingWriteDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_clothing);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         context = this;
 
@@ -126,7 +137,24 @@ public class AddClothingActivity extends Activity {
                 int preference = prefSeekBar.getProgress();
                 String type = clothingTypeSpinner.getSelectedItem().toString();
 
+                Clothing clothing = new Clothing(-1, name, description, preference, type, clothingImage);
 
+                SQLiteDatabase db = DBManager.getWriteDB();
+
+                ContentValues values = new ContentValues();
+                values.put(ClothingContract.ClothingEntry.COLUMN_NAME_NAME, clothing.getName());
+                values.put(ClothingContract.ClothingEntry.COLUMN_NAME_DESCRIPTION, clothing.getDescription());
+                values.put(ClothingContract.ClothingEntry.COLUMN_NAME_PREFERENCE, clothing.getPreference());
+                values.put(ClothingContract.ClothingEntry.COLUMN_NAME_TYPE, clothing.getType());
+                values.put(ClothingContract.ClothingEntry.COLUMN_NAME_IMAGE, clothing.toByteArray());
+
+                long newRowID = db.insert(ClothingContract.ClothingEntry.TABLE_NAME, "null", values);
+                clothing.setID(newRowID);
+
+                Intent intent = new Intent();
+                intent.putExtra("newClothing", clothing);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }

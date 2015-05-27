@@ -1,6 +1,5 @@
 package com.jasonf7.what2wear.view;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jasonf7.what2wear.R;
+import com.jasonf7.what2wear.database.Clothing;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,30 +17,23 @@ import com.jasonf7.what2wear.R;
  * create an instance of this fragment.
  */
 public class ClothingFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private ArrayList<Clothing> clothingList;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param param1 ArrayList of Clothing.
      * @return A new instance of fragment ClothingFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ClothingFragment newInstance(String param1, String param2) {
+    public static ClothingFragment newInstance(ArrayList<Clothing> param1) {
         ClothingFragment fragment = new ClothingFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        // TODO: Make ArrayList<Clothing> Parcelable
+        args.putParcelableArray(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,8 +46,7 @@ public class ClothingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            clothingList = getArguments().getParcelableArrayList(ARG_PARAM1);
         }
 
 //        getActivity().getActionBar().show();
@@ -66,6 +60,5 @@ public class ClothingFragment extends Fragment {
 
         return clothingView;
     }
-
 
 }
