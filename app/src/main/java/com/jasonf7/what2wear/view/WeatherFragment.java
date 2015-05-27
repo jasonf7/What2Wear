@@ -116,7 +116,7 @@ public class WeatherFragment extends Fragment {
             };
 
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locationListener);
+//            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locationListener);
         }
     }
 

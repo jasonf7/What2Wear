@@ -1,6 +1,7 @@
 package com.jasonf7.what2wear;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.jasonf7.what2wear.view.AddClothingActivity;
 import com.jasonf7.what2wear.view.ClothingFragment;
 import com.jasonf7.what2wear.view.WeatherFragment;
 
@@ -74,7 +76,9 @@ public class MainActivity extends FragmentActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if(id == R.id.action_add_clothing) {
+            Intent intent = new Intent(this, AddClothingActivity.class);
+            startActivity(intent);
             return true;
         }
 

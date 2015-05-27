@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="clothingTypeItems">
+        <item>T-Shirt</item>
+        <item>Long-sleeve Shirt</item>
+        <item>Dress Shirt</item>
+        <item>Pants</item>
+        <item>Shorts</item>
+    </string-array>
+
+    <string-array name="imageDialogOptions">
+        <item>Choose an existing photo</item>
+        <item>Take a new photo</item>
+    </string-array>
+</resources>
