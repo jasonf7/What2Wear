@@ -141,33 +141,6 @@ public class WeatherFragment extends Fragment {
     }
 
     private void getWeatherData(final String lat, final String lon){
-//        new Thread(){
-//            public void run(){
-//                URL url = null;
-//                try {
-//                    url = new URL(String.format(WeatherHttp.OPEN_WEATHER_MAP_API_COORD, lat, lon));
-//                } catch (MalformedURLException e) {
-//                    e.printStackTrace();
-//                }
-//                weatherInfo = WeatherHttp.getJSON(getActivity(), url);
-//                if(weatherInfo == null){
-//                    handler.post(new Runnable(){
-//                        public void run(){
-//                            Toast.makeText(getActivity(),"Weather for (" + lat + "," + lon + ") is unavailable.",
-//                                    Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//                } else {
-//                    handler.post(new Runnable(){
-//                        public void run(){
-//                            Log.d("DEBUG", "Weather info retrieved!");
-//                            updateWeatherUI(weatherInfo);
-//                        }
-//                    });
-//                }
-//            }
-//        }.start();
-
         new Thread(){
             public void run(){
                 URL url = null;

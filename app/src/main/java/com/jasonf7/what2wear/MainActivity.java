@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,12 +18,14 @@ import android.view.MenuItem;
 
 import com.jasonf7.what2wear.database.Clothing;
 import com.jasonf7.what2wear.database.ClothingContract;
+import com.jasonf7.what2wear.database.ClothingList;
 import com.jasonf7.what2wear.database.DBManager;
 import com.jasonf7.what2wear.view.AddClothingActivity;
 import com.jasonf7.what2wear.view.ClothingFragment;
 import com.jasonf7.what2wear.view.WeatherFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends FragmentActivity {
@@ -32,7 +35,9 @@ public class MainActivity extends FragmentActivity {
 
     private double latitude, longitude;
 
-    private ArrayList<Clothing> clothingList;
+    private ClothingList clothingList;
+
+    private FragmentStatePagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +47,14 @@ public class MainActivity extends FragmentActivity {
 
         context = this;
 
-        DBManager.initDB(context);
+        clothingList = new ClothingList();
+
+        DBManager.initDB(context, new DBManager.OnInitializedListener() {
+            @Override
+            public void onInitialized() {
+                getClothing();
+            }
+        });
 
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -55,7 +67,12 @@ public class MainActivity extends FragmentActivity {
             latitude = -1;
         }
 
-        FragmentPagerAdapter pagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        pagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public int getItemPosition(Object object){
+                return POSITION_NONE;
+            }
+
             @Override
             public Fragment getItem(int position) {
                 switch (position){
@@ -76,8 +93,6 @@ public class MainActivity extends FragmentActivity {
 
         ViewPager mViewPager = (ViewPager) findViewById(R.id.mainViewPager);
         mViewPager.setAdapter(pagerAdapter);
-
-        getClothing();
     }
 
     @Override
@@ -108,15 +123,16 @@ public class MainActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK){
             if(requestCode == ADD_CLOTHING) {
-                clothingList.add((Clothing)data.getParcelableExtra("newClothing"));
+                clothingList.getList().add((Clothing) data.getParcelableExtra("newClothing"));
+                pagerAdapter.notifyDataSetChanged();
             }
         }
     }
 
     private void getClothing() {
-        clothingList = new ArrayList<>();
+        List<Clothing> tempList = new ArrayList<>();
 
-        SQLiteDatabase db = DBManager.getWriteDB();
+        SQLiteDatabase db = DBManager.getReadDB();
 
         String[] projection = {
                 ClothingContract.ClothingEntry._ID,
@@ -150,8 +166,10 @@ public class MainActivity extends FragmentActivity {
             Clothing clothing = new Clothing(id, name, desc, preference, type, null);
             clothing.fromByteArray(imageBytes);
 
-            clothingList.add(clothing);
+            tempList.add(clothing);
         }
         c.close();
+
+        clothingList.setList(tempList);
     }
 }

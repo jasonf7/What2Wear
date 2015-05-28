@@ -13,7 +13,11 @@ public class DBManager {
     private static ClothingDbHelper clothingDbHelper;
     private static SQLiteDatabase clothingReadDB, clothingWriteDB;
 
-    public static void initDB(Context mContext) {
+    public interface OnInitializedListener {
+        void onInitialized();
+    }
+
+    public static void initDB(Context mContext , final OnInitializedListener listener) {
         context = mContext;
 
         AsyncTask<Void, Void, Void> initDBTask = new AsyncTask<Void, Void, Void>() {
@@ -22,6 +26,7 @@ public class DBManager {
                 clothingDbHelper = new ClothingDbHelper(context);
                 clothingReadDB = clothingDbHelper.getReadableDatabase();
                 clothingWriteDB = clothingDbHelper.getWritableDatabase();
+                listener.onInitialized();
                 return null;
             }
         };

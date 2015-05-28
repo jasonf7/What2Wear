@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jasonf7.what2wear.R;
-import com.jasonf7.what2wear.database.Clothing;
-
-import java.util.ArrayList;
+import com.jasonf7.what2wear.database.ClothingList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,7 +18,7 @@ public class ClothingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
 
-    private ArrayList<Clothing> clothingList;
+    private ClothingList clothingList;
 
     /**
      * Use this factory method to create a new instance of
@@ -29,11 +27,10 @@ public class ClothingFragment extends Fragment {
      * @param param1 ArrayList of Clothing.
      * @return A new instance of fragment ClothingFragment.
      */
-    public static ClothingFragment newInstance(ArrayList<Clothing> param1) {
+    public static ClothingFragment newInstance(ClothingList param1) {
         ClothingFragment fragment = new ClothingFragment();
         Bundle args = new Bundle();
-        // TODO: Make ArrayList<Clothing> Parcelable
-        args.putParcelableArray(ARG_PARAM1, param1);
+        args.putParcelable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +43,7 @@ public class ClothingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            clothingList = getArguments().getParcelableArrayList(ARG_PARAM1);
+            clothingList = getArguments().getParcelable(ARG_PARAM1);
         }
 
 //        getActivity().getActionBar().show();

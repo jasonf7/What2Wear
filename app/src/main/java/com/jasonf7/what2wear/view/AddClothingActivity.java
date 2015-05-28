@@ -49,17 +49,12 @@ public class AddClothingActivity extends Activity {
     private Uri picUri;
     private Bitmap clothingImage;
 
-    private ClothingDbHelper clothingDbHelper;
-    private SQLiteDatabase clothingReadDB, clothingWriteDB;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_clothing);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
 
         context = this;
 
