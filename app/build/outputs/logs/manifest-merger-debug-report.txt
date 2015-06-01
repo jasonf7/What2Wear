@@ -76,19 +76,29 @@ ADDED from AndroidManifest.xml:25:9
 		ADDED from AndroidManifest.xml:27:13
 	android:name
 		ADDED from AndroidManifest.xml:26:13
+activity#com.jasonf7.what2wear.view.clothing.DummyActivity
+ADDED from AndroidManifest.xml:32:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:36:13
+	android:label
+		ADDED from AndroidManifest.xml:35:13
+	android:parentActivityName
+		ADDED from AndroidManifest.xml:34:13
+	android:name
+		ADDED from AndroidManifest.xml:33:13
 uses-permission#android.permission.INTERNET
-ADDED from AndroidManifest.xml:35:5
+ADDED from AndroidManifest.xml:42:5
 	android:name
-		ADDED from AndroidManifest.xml:35:22
+		ADDED from AndroidManifest.xml:42:22
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from AndroidManifest.xml:36:5
+ADDED from AndroidManifest.xml:43:5
 	android:name
-		ADDED from AndroidManifest.xml:36:22
+		ADDED from AndroidManifest.xml:43:22
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from AndroidManifest.xml:37:5
+ADDED from AndroidManifest.xml:44:5
 	android:name
-		ADDED from AndroidManifest.xml:37:22
+		ADDED from AndroidManifest.xml:44:22
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from AndroidManifest.xml:38:5
+ADDED from AndroidManifest.xml:45:5
 	android:name
-		ADDED from AndroidManifest.xml:38:22
+		ADDED from AndroidManifest.xml:45:22

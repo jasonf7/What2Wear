@@ -28,6 +28,13 @@
             android:label="@string/add_clothing_name"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".view.clothing.DummyActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="Dumy"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 

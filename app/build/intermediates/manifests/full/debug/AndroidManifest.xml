@@ -40,6 +40,12 @@
             android:parentActivityName="com.jasonf7.what2wear.MainActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.jasonf7.what2wear.view.clothing.DummyActivity"
+            android:label="Dumy"
+            android:parentActivityName="com.jasonf7.what2wear.MainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

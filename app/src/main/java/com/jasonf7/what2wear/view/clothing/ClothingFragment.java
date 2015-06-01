@@ -1,12 +1,15 @@
-package com.jasonf7.what2wear.view;
+package com.jasonf7.what2wear.view.clothing;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
 
 import com.jasonf7.what2wear.R;
+import com.jasonf7.what2wear.database.Clothing;
 import com.jasonf7.what2wear.database.ClothingList;
 
 /**
@@ -54,6 +57,22 @@ public class ClothingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View clothingView = inflater.inflate(R.layout.fragment_clothing, container, false);
+
+        ExpandableListView clothingListView = (ExpandableListView) clothingView.findViewById(R.id.clothingListView);
+        ClothingListAdapter clothingListAdapter = new ClothingListAdapter(getActivity(), clothingList, Clothing.SORT_BY_TYPE);
+        clothingListView.setAdapter(clothingListAdapter);
+        clothingListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                View subMenu = v.findViewById(R.id.subMenuLayout);
+                if (subMenu.getVisibility() == View.GONE) {
+                    subMenu.setVisibility(View.VISIBLE);
+                } else if (subMenu.getVisibility() == View.VISIBLE) {
+                    subMenu.setVisibility(View.GONE);
+                }
+                return true;
+            }
+        });
 
         return clothingView;
     }

@@ -8,7 +8,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import com.jasonf7.what2wear.database.ClothingContract;
 import com.jasonf7.what2wear.database.ClothingList;
 import com.jasonf7.what2wear.database.DBManager;
 import com.jasonf7.what2wear.view.AddClothingActivity;
-import com.jasonf7.what2wear.view.ClothingFragment;
+import com.jasonf7.what2wear.view.clothing.ClothingFragment;
 import com.jasonf7.what2wear.view.WeatherFragment;
 
 import java.util.ArrayList;
@@ -31,7 +30,9 @@ import java.util.List;
 public class MainActivity extends FragmentActivity {
     private Context context;
 
-    private static final int ADD_CLOTHING = 1;
+    public static final int ADD_CLOTHING = 1;
+    public static final int EDIT_CLOTHING = 2;
+    public static final int DELETE_CLOTHING = 3;
 
     private double latitude, longitude;
 
@@ -53,6 +54,13 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onInitialized() {
                 getClothing();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pagerAdapter.notifyDataSetChanged();
+                    }
+                });
+
             }
         });
 
@@ -112,6 +120,7 @@ public class MainActivity extends FragmentActivity {
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_add_clothing) {
             Intent intent = new Intent(this, AddClothingActivity.class);
+            intent.putExtra("sender", ADD_CLOTHING);
             startActivityForResult(intent, ADD_CLOTHING);
             return true;
         }
@@ -124,6 +133,30 @@ public class MainActivity extends FragmentActivity {
         if(resultCode == RESULT_OK){
             if(requestCode == ADD_CLOTHING) {
                 clothingList.getList().add((Clothing) data.getParcelableExtra("newClothing"));
+                pagerAdapter.notifyDataSetChanged();
+            } else if(requestCode == EDIT_CLOTHING) {
+                Clothing clothing = data.getParcelableExtra("newClothing");
+                List<Clothing> tempList = clothingList.getList();
+                for(int i=0; i < tempList.size(); i++){
+                    if(tempList.get(i).getID() == clothing.getID()){
+                        tempList.set(i, clothing);
+                        break;
+                    }
+                }
+                clothingList.setList(tempList);
+                pagerAdapter.notifyDataSetChanged();
+            } else if(requestCode == DELETE_CLOTHING) {
+                Clothing clothing = data.getParcelableExtra("newClothing");
+                List<Clothing> tempList = clothingList.getList();
+                int delIndex = 0;
+                for(int i=0; i < tempList.size(); i++){
+                    if(tempList.get(i).getID() == clothing.getID()){
+                        delIndex = i;
+                        break;
+                    }
+                }
+                tempList.remove(delIndex);
+                clothingList.setList(tempList);
                 pagerAdapter.notifyDataSetChanged();
             }
         }
@@ -164,6 +197,7 @@ public class MainActivity extends FragmentActivity {
             byte[] imageBytes = c.getBlob(c.getColumnIndexOrThrow(ClothingContract.ClothingEntry.COLUMN_NAME_IMAGE));
 
             Clothing clothing = new Clothing(id, name, desc, preference, type, null);
+            Log.d("DEBUG", name + ": " + id);
             clothing.fromByteArray(imageBytes);
 
             tempList.add(clothing);

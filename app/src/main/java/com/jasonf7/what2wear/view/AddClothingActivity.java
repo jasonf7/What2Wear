@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jasonf7.what2wear.MainActivity;
 import com.jasonf7.what2wear.R;
 import com.jasonf7.what2wear.database.Clothing;
 import com.jasonf7.what2wear.database.ClothingContract;
@@ -49,6 +51,8 @@ public class AddClothingActivity extends Activity {
     private Uri picUri;
     private Bitmap clothingImage;
 
+    private int sender;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,8 @@ public class AddClothingActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
+
+        sender = getIntent().getIntExtra("sender", MainActivity.ADD_CLOTHING);
 
         nameEdit = (EditText) findViewById(R.id.nameEdit);
         descEdit = (EditText) findViewById(R.id.descEdit);
@@ -134,8 +140,6 @@ public class AddClothingActivity extends Activity {
 
                 Clothing clothing = new Clothing(-1, name, description, preference, type, clothingImage);
 
-                SQLiteDatabase db = DBManager.getWriteDB();
-
                 ContentValues values = new ContentValues();
                 values.put(ClothingContract.ClothingEntry.COLUMN_NAME_NAME, clothing.getName());
                 values.put(ClothingContract.ClothingEntry.COLUMN_NAME_DESCRIPTION, clothing.getDescription());
@@ -143,8 +147,23 @@ public class AddClothingActivity extends Activity {
                 values.put(ClothingContract.ClothingEntry.COLUMN_NAME_TYPE, clothing.getType());
                 values.put(ClothingContract.ClothingEntry.COLUMN_NAME_IMAGE, clothing.toByteArray());
 
-                long newRowID = db.insert(ClothingContract.ClothingEntry.TABLE_NAME, "null", values);
-                clothing.setID(newRowID);
+                if(sender == MainActivity.ADD_CLOTHING) {
+                    SQLiteDatabase db = DBManager.getWriteDB();
+
+                    long newRowID = db.insert(ClothingContract.ClothingEntry.TABLE_NAME, "null", values);
+                    clothing.setID(newRowID);
+                } else if(sender == MainActivity.EDIT_CLOTHING) {
+                    Clothing oldClothing = getIntent().getParcelableExtra("clothing");
+                    SQLiteDatabase db = DBManager.getReadDB();
+
+                    String selection = ClothingContract.ClothingEntry._ID + " LIKE ?";
+                    String[] selectionArgs = { String.valueOf(oldClothing.getID()) };
+
+                    int count = db.update(ClothingContract.ClothingEntry.TABLE_NAME, values, selection, selectionArgs);
+                    Log.d("DEBUG", "Update " + oldClothing.getID() + ": " + count);
+
+                    clothing.setID(oldClothing.getID());
+                }
 
                 Intent intent = new Intent();
                 intent.putExtra("newClothing", clothing);
@@ -152,6 +171,17 @@ public class AddClothingActivity extends Activity {
                 finish();
             }
         });
+
+        if(sender == MainActivity.EDIT_CLOTHING){
+            Clothing clothing = getIntent().getParcelableExtra("clothing");
+
+            nameEdit.setText(clothing.getName());
+            clothingImage = clothing.getImage();
+            clothingImageView.setImageBitmap(clothing.getImage());
+            descEdit.setText(clothing.getDescription());
+            prefSeekBar.setProgress(clothing.getPreference());
+            clothingTypeSpinner.setSelection(((ArrayAdapter)clothingTypeSpinner.getAdapter()).getPosition(clothing.getType()));
+        }
     }
 
     @Override

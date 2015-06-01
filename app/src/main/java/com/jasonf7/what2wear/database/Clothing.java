@@ -11,6 +11,8 @@ import java.io.ByteArrayOutputStream;
  * Created by jasonf7 on 26/05/15.
  */
 public class Clothing implements Parcelable {
+    public static final int SORT_BY_TYPE = 1;
+
     private long id;
 
     private String name;
@@ -87,6 +89,8 @@ public class Clothing implements Parcelable {
     }
 
     public Clothing(Parcel source) {
+        id = source.readLong();
+
         String[] data = new String[3];
         source.readStringArray(data);
 
@@ -108,6 +112,7 @@ public class Clothing implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
         dest.writeStringArray(new String[]{this.name,
                 this.description,
                 this.type});
