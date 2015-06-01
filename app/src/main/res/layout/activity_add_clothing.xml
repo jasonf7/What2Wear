@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_orange_light">
 
     <EditText
         android:id="@+id/nameEdit"
@@ -32,7 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Preference: "/>
+            android:textColor="@android:color/white"
+            android:text="Preference: "
+            android:textSize="25dp"/>
 
         <SeekBar
             android:id="@+id/prefSeekBar"
@@ -46,7 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="50%" />
+            android:text="50%"
+            android:textColor="@android:color/white"
+            android:textSize="25dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -58,7 +63,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Type: "/>
+            android:text="Type: "
+            android:textColor="@android:color/white"
+            android:textSize="25dp"/>
 
         <Spinner
             android:id="@+id/typeSpinner"

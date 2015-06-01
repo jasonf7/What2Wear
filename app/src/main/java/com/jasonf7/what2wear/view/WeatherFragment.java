@@ -12,9 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jasonf7.what2wear.R;
+import com.jasonf7.what2wear.database.Clothing;
+import com.jasonf7.what2wear.database.ClothingList;
 import com.jasonf7.what2wear.http.weather.WeatherHttp;
 import com.jasonf7.what2wear.http.weather.WeatherResponse;
 
@@ -26,6 +31,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,14 +39,15 @@ import java.util.Date;
  * create an instance of this fragment.
  */
 public class WeatherFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_LOC_LATITUDE = "location_latitude";
     private static final String ARG_LOC_LONGITUDE = "location_longitude";
+    private static final String ARG_CLOTHING = "clothing";
 
-    // TODO: Rename and change types of parameters
     private double locLatitude;
     private double locLongitude;
+
+    private ClothingList clothingList;
 
     private Handler handler;
     private Typeface weatherFont;
@@ -52,6 +59,10 @@ public class WeatherFragment extends Fragment {
     private TextView temperatureText;
     private TextView detailsText;
 
+    private LinearLayout clothingLayout;
+
+    private Button chooseClothingButton;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -61,11 +72,12 @@ public class WeatherFragment extends Fragment {
      * @return A new instance of fragment WeatherFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WeatherFragment newInstance(double param1, double param2) {
+    public static WeatherFragment newInstance(double param1, double param2, ClothingList cList) {
         WeatherFragment fragment = new WeatherFragment();
         Bundle args = new Bundle();
         args.putDouble(ARG_LOC_LATITUDE, param1);
         args.putDouble(ARG_LOC_LONGITUDE, param2);
+        args.putParcelable(ARG_CLOTHING, cList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,6 +93,7 @@ public class WeatherFragment extends Fragment {
         if (getArguments() != null) {
             locLatitude = getArguments().getDouble(ARG_LOC_LATITUDE);
             locLongitude = getArguments().getDouble(ARG_LOC_LONGITUDE);
+            clothingList = getArguments().getParcelable(ARG_CLOTHING);
         }
 
         weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
@@ -116,12 +129,12 @@ public class WeatherFragment extends Fragment {
             };
 
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-//            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locationListener);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locationListener);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View weatherView = inflater.inflate(R.layout.fragment_weather, container, false);
@@ -137,7 +150,37 @@ public class WeatherFragment extends Fragment {
 
         detailsText = (TextView)weatherView.findViewById(R.id.detailsText);
 
+        clothingLayout = (LinearLayout)weatherView.findViewById(R.id.clothingLayout);
+
+        chooseClothingButton = (Button)weatherView.findViewById(R.id.chooseClothingButton);
+        chooseClothingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clothingLayout.removeAllViews();
+
+                Random rand = new Random();
+
+                int listSize = clothingList.getList().size();
+
+                for(int i=0; i<2; i++){
+                    int randomIndex = rand.nextInt(listSize);
+                    Clothing clothing = clothingList.getList().get(randomIndex);
+
+                    clothingLayout.addView(constructClothingView(clothing, inflater, container));
+                }
+            }
+        });
+
         return weatherView;
+    }
+
+    private View constructClothingView(Clothing clothing, LayoutInflater inflater, ViewGroup parent){
+        View clothingView = inflater.inflate(R.layout.clothing_item, null);
+        ((TextView)clothingView.findViewById(R.id.itemPreference)).setText(clothing.getPreference() + "%");
+        ((ImageView)clothingView.findViewById(R.id.itemImage)).setImageBitmap(clothing.getImage());
+        ((TextView)clothingView.findViewById(R.id.itemName)).setText(clothing.getName());
+        ((TextView)clothingView.findViewById(R.id.itemDesc)).setText(clothing.getDescription());
+        return clothingView;
     }
 
     private void getWeatherData(final String lat, final String lon){
@@ -151,8 +194,14 @@ public class WeatherFragment extends Fragment {
                 }
                 weatherInfo = WeatherHttp.getJSON(getActivity(), url);
                 if(weatherInfo == null){
-                    Toast.makeText(getActivity(),"Weather for (" + lat + "," + lon + ") is unavailable.",
-                            Toast.LENGTH_LONG).show();
+                    /*getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Weather for (" + lat + "," + lon + ") is unavailable.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });*/
+
                 } else {
                     Log.d("DEBUG", "Weather info retrieved!");
                     getActivity().runOnUiThread(new Runnable() {

@@ -85,7 +85,7 @@ public class MainActivity extends FragmentActivity {
             public Fragment getItem(int position) {
                 switch (position){
                     case 0:
-                        return WeatherFragment.newInstance(latitude, longitude);
+                        return WeatherFragment.newInstance(latitude, longitude, clothingList);
                     case 1:
                         return ClothingFragment.newInstance(clothingList);
                     default:
