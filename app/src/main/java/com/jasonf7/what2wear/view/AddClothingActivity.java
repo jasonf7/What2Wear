@@ -134,7 +134,7 @@ public class AddClothingActivity extends Activity {
                     return;
                 }
 
-                String description = nameEdit.getText().toString();
+                String description = descEdit.getText().toString();
                 int preference = prefSeekBar.getProgress();
                 String type = clothingTypeSpinner.getSelectedItem().toString();
 

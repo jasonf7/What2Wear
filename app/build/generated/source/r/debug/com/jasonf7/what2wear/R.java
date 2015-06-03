@@ -1611,7 +1611,7 @@ containing a value of this type.
         public static final int subMenuLayout=0x7f0d005a;
         public static final int submit_area=0x7f0d004b;
         public static final int tabMode=0x7f0d000b;
-        public static final int temperatureText=0x7f0d0067;
+        public static final int temperatureText=0x7f0d0066;
         public static final int textSpacerNoButtons=0x7f0d0033;
         public static final int title=0x7f0d002c;
         public static final int title_template=0x7f0d002f;
@@ -1619,7 +1619,7 @@ containing a value of this type.
         public static final int typeSpinner=0x7f0d0054;
         public static final int up=0x7f0d0008;
         public static final int useLogo=0x7f0d0012;
-        public static final int weatherIconText=0x7f0d0066;
+        public static final int weatherIconText=0x7f0d0067;
         public static final int withText=0x7f0d001a;
         public static final int wrap_content=0x7f0d001d;
     }

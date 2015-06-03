@@ -502,7 +502,7 @@ int id src_over 0x7f0d0022
 int id subMenuLayout 0x7f0d005a
 int id submit_area 0x7f0d004b
 int id tabMode 0x7f0d000b
-int id temperatureText 0x7f0d0067
+int id temperatureText 0x7f0d0066
 int id textSpacerNoButtons 0x7f0d0033
 int id title 0x7f0d002c
 int id title_template 0x7f0d002f
@@ -510,7 +510,7 @@ int id topPanel 0x7f0d002e
 int id typeSpinner 0x7f0d0054
 int id up 0x7f0d0008
 int id useLogo 0x7f0d0012
-int id weatherIconText 0x7f0d0066
+int id weatherIconText 0x7f0d0067
 int id withText 0x7f0d001a
 int id wrap_content 0x7f0d001d
 int integer abc_config_activityDefaultDur 0x7f0a0001

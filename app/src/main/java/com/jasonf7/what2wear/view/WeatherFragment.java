@@ -30,7 +30,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -48,6 +51,7 @@ public class WeatherFragment extends Fragment {
     private double locLongitude;
 
     private ClothingList clothingList;
+    private HashMap<String, List<Clothing>> clothingMap;
 
     private Handler handler;
     private Typeface weatherFont;
@@ -94,6 +98,16 @@ public class WeatherFragment extends Fragment {
             locLatitude = getArguments().getDouble(ARG_LOC_LATITUDE);
             locLongitude = getArguments().getDouble(ARG_LOC_LONGITUDE);
             clothingList = getArguments().getParcelable(ARG_CLOTHING);
+
+            clothingMap = new HashMap<>();
+            for(Clothing clothing : clothingList.getList()) {
+                String type = clothing.getType();
+                if(clothingMap.get(type) == null) {
+                    List<Clothing> cList = new ArrayList<>();
+                    clothingMap.put(type, cList);
+                }
+                clothingMap.get(type).add(clothing);
+            }
         }
 
         weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
@@ -160,14 +174,25 @@ public class WeatherFragment extends Fragment {
 
                 Random rand = new Random();
 
-                int listSize = clothingList.getList().size();
+                String[] typeArr = getResources().getStringArray(R.array.clothingTypeItems);
 
-                for(int i=0; i<2; i++){
-                    int randomIndex = rand.nextInt(listSize);
-                    Clothing clothing = clothingList.getList().get(randomIndex);
-
-                    clothingLayout.addView(constructClothingView(clothing, inflater, container));
+                List<Clothing> topList = new ArrayList<>();
+                List<Clothing> botList = new ArrayList<>();
+                for(int i=0; i < typeArr.length; i++) {
+                    if(clothingMap.get(typeArr[i]) != null){
+                        List<Clothing> clothingTypeList = clothingMap.get(typeArr[i]);
+                        if(i <= 2)
+                            topList.addAll(clothingTypeList);
+                        else
+                            botList.addAll(clothingTypeList);
+                    }
                 }
+
+                int topIndex = rand.nextInt(topList.size());
+                clothingLayout.addView(constructClothingView(topList.get(topIndex), inflater, container));
+
+                int botIndex = rand.nextInt(botList.size());
+                clothingLayout.addView(constructClothingView(botList.get(botIndex), inflater, container));
             }
         });
 
